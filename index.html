@@ -60,8 +60,10 @@ nav.tabs .ic{font-size:22px;display:block;line-height:1.2}
 #bead-ring{display:block;margin:4px auto}
 #bead-big{display:block;margin:6px auto;width:128px;height:128px;border-radius:50%;border:6px solid #92400e;background:radial-gradient(circle at 35% 30%,#d97706,#92400e);color:#fff;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(146,64,14,.35)}
 #bead-big:active{transform:scale(.95)}
-#fish-big{display:block;margin:6px auto;width:190px;height:128px;border:0;background:none;font-size:104px;line-height:1.1;cursor:pointer;font-family:inherit}
-#fish-big:active{transform:scale(.93)}
+#fish-big{display:block;margin:2px auto;width:220px;max-width:88%;border:0;background:none;cursor:pointer;font-family:inherit;padding:0}
+#fish-big:active{transform:scale(.95)}
+.inst-big{display:block;margin:2px auto;width:200px;max-width:80%;border:0;background:none;cursor:pointer;font-family:inherit;padding:0}
+.inst-big:active{transform:scale(.95)}
 .tap-num{font-size:30px;font-weight:700;color:var(--teal);text-align:center}
 /* ---- 心經 ---- */
 .sutra{font-size:17.5px;line-height:2.05;letter-spacing:1px}
@@ -72,7 +74,15 @@ table.sum th,table.sum td{padding:6px 4px;border-bottom:1px solid #efe6cf;text-a
 table.sum th:first-child,table.sum td:first-child{text-align:left}
 .lbl{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
 .lbl:first-child{margin-top:0}
-input[type=text],textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:9px;font-size:15px;font-family:inherit;background:#fff;color:var(--text)}
+input[type=text],textarea,select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:9px;font-size:15px;font-family:inherit;background:#fff;color:var(--text)}
+details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:700;font-size:14px}
+.track{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #efe6cf}
+.track:last-child{border-bottom:0}
+.track .nm{flex:1;min-width:0;font-size:14.5px}
+.track .del{color:var(--red);border:0;background:none;font-size:16px;cursor:pointer}
+#mantra-big{display:block;margin:10px auto;width:132px;height:132px;border-radius:50%;border:6px solid var(--teal);background:radial-gradient(circle at 35% 30%,#14b8a6,var(--teal));color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(11,61,57,.35)}
+#mantra-big:active{transform:scale(.95)}
+.mantra-text{font-size:19px;line-height:1.9;letter-spacing:1px;text-align:center}
 .switch{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #efe6cf}
 .switch:last-child{border-bottom:0}
 </style>
@@ -134,7 +144,7 @@ input[type=text],textarea{width:100%;padding:10px 12px;border:1px solid var(--bo
       <button class="btn" id="btn-go-fish">敲木魚 →</button>
       <button class="btn" id="btn-go-beads">撥念珠 →</button>
       <button class="btn" id="btn-bell">🔔 敲鐘一聲</button>
-      <button class="btn" id="btn-go-sutra">誦心經 →</button>
+      <button class="btn" id="btn-go-sutra">經咒 →</button>
     </div>
     <p class="small muted" style="margin:10px 0 0">點場景裡的「佛前／庭院／鐘下／樹下」可以走過去。靜坐中再點一次「坐下靜坐」就會起身，時間照算。</p>
   </div>
@@ -161,9 +171,21 @@ input[type=text],textarea{width:100%;padding:10px 12px;border:1px solid var(--bo
   </div>
   <div class="card center">
     <b>木魚</b>
-    <button id="fish-big" aria-label="敲木魚">🪵</button>
+    <button id="fish-big" aria-label="敲木魚"><svg viewBox="0 0 220 165" width="100%"><defs><radialGradient id="woodG" cx="0.38" cy="0.3" r="0.95"><stop offset="0" stop-color="#d98a4a"/><stop offset="0.55" stop-color="#b45309"/><stop offset="1" stop-color="#7c2d12"/></radialGradient></defs><ellipse cx="110" cy="146" rx="80" ry="13" fill="#991b1b"/><ellipse cx="110" cy="142" rx="80" ry="13" fill="#b91c1c"/><ellipse cx="110" cy="90" rx="74" ry="54" fill="url(#woodG)"/><ellipse cx="72" cy="44" rx="13" ry="10" fill="#92400e"/><ellipse cx="148" cy="44" rx="13" ry="10" fill="#92400e"/><circle cx="72" cy="44" r="4.5" fill="#451a03"/><circle cx="148" cy="44" r="4.5" fill="#451a03"/><path d="M62 62 Q110 40 158 62" stroke="rgba(69,26,3,.4)" stroke-width="3" fill="none"/><path d="M52 82 Q110 58 168 82" stroke="rgba(69,26,3,.35)" stroke-width="3" fill="none"/><path d="M48 104 Q110 138 172 104" stroke="#451a03" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M60 96 Q110 122 160 96" stroke="rgba(0,0,0,.35)" stroke-width="3" fill="none"/><ellipse cx="82" cy="66" rx="26" ry="13" fill="#fff" opacity=".16" transform="rotate(-18 82 66)"/><g transform="rotate(28 186 118)"><rect x="180" y="84" width="12" height="56" rx="6" fill="#92400e"/><circle cx="186" cy="82" r="10" fill="#b45309"/></g></svg></button>
     <div class="tap-num" id="fish-count">0</div>
     <div class="small muted">點木魚，一下一下慢慢敲（有聲音、會輕震）</div>
+  </div>
+  <div class="card center">
+    <b>引磬</b>
+    <button class="inst-big" id="qing-big" aria-label="敲引磬"><svg viewBox="0 0 200 160" width="100%"><defs><linearGradient id="qingG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#b45309"/></linearGradient></defs><circle cx="100" cy="30" r="7" fill="#92400e"/><path d="M52 66 Q56 34 100 32 Q144 34 148 66 Q124 80 100 80 Q76 80 52 66Z" fill="url(#qingG)" stroke="#92400e" stroke-width="2"/><ellipse cx="100" cy="67" rx="48" ry="7" fill="#92400e" opacity=".55"/><rect x="95" y="78" width="10" height="58" rx="5" fill="#78350f"/><g transform="rotate(-32 158 108)"><rect x="154" y="66" width="7" height="66" rx="3.5" fill="#57534e"/><circle cx="157" cy="62" r="7" fill="#292524"/></g><ellipse cx="82" cy="48" rx="16" ry="7" fill="#fff" opacity=".35" transform="rotate(-14 82 48)"/></svg></button>
+    <div class="tap-num" id="qing-count">0</div>
+    <div class="small muted">點一下，清脆一聲「叮」，餘音慢慢散（誦經起腔、收尾常用）</div>
+  </div>
+  <div class="card center">
+    <b>頌缽</b>
+    <button class="inst-big" id="bowl-big" aria-label="敲頌缽"><svg viewBox="0 0 220 160" width="100%"><defs><linearGradient id="bowlG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f59e0b"/><stop offset="0.5" stop-color="#b45309"/><stop offset="1" stop-color="#78350f"/></linearGradient></defs><ellipse cx="110" cy="134" rx="54" ry="11" fill="#7f1d1d"/><path d="M28 58 Q32 122 110 126 Q188 122 192 58 Q150 74 110 74 Q70 74 28 58Z" fill="url(#bowlG)"/><ellipse cx="110" cy="58" rx="82" ry="15" fill="#d97706"/><ellipse cx="110" cy="58" rx="68" ry="10" fill="#92400e"/><ellipse cx="110" cy="57" rx="68" ry="9" fill="#78350f"/><path d="M48 84 Q110 100 172 84" stroke="rgba(69,26,3,.4)" stroke-width="3" fill="none"/><path d="M56 102 Q110 116 164 102" stroke="rgba(69,26,3,.3)" stroke-width="3" fill="none"/><ellipse cx="72" cy="80" rx="20" ry="8" fill="#fff" opacity=".22" transform="rotate(-10 72 80)"/><g transform="rotate(38 190 108)"><rect x="184" y="76" width="11" height="58" rx="5.5" fill="#92400e"/><circle cx="189" cy="72" r="11" fill="#e7e5e4" stroke="#a8a29e"/></g></svg></button>
+    <div class="tap-num" id="bowl-count">0</div>
+    <div class="small muted">點一下，低沉共鳴慢慢擴散（適合靜坐前後各敲一次）</div>
   </div>
   <div class="card">
     <b>🧘 靜坐計時</b>
@@ -175,22 +197,65 @@ input[type=text],textarea{width:100%;padding:10px 12px;border:1px solid var(--bo
   </div>
 </section>
 
-<!-- 心經 -->
+<!-- 經咒 -->
 <section class="view" id="view-sutra">
-  <div class="card">
-    <div class="row" style="justify-content:space-between"><b>般若波羅蜜多心經</b><span class="small muted" id="sutra-count">今日已誦 0 遍</span></div>
-    <p class="sutra" id="sutra-text" style="margin:10px 0"></p>
-    <div class="row"><button class="btn btn-gold" id="sutra-play" style="flex:1">▶ 開始誦經</button><button class="btn" id="sutra-reset">從頭來</button></div>
-    <p class="small muted" style="margin:8px 0 0">跟著亮起來的字句慢慢唸，唸完一遍會敲鐘一聲並記一遍。經文是古籍原文，沒有另外的誦經錄音。</p>
+  <div class="seg" style="margin-bottom:12px">
+    <button id="seg-sutra" class="active">📖 佛經</button>
+    <button id="seg-mantra">📿 念咒</button>
+  </div>
+  <div id="panel-sutra">
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><b id="sutra-title-show">般若心經</b><span class="small muted" id="sutra-count">今日已誦 0 遍</span></div>
+      <label class="lbl">選擇經文</label>
+      <select id="sutra-select"></select>
+      <p class="sutra" id="sutra-text" style="margin:10px 0"></p>
+      <div class="row"><button class="btn btn-gold" id="sutra-play" style="flex:1">▶ 開始誦經</button><button class="btn" id="sutra-tts">🔊 朗讀</button><button class="btn" id="sutra-reset">從頭來</button></div>
+      <p class="small muted" style="margin:8px 0 0">跟著亮起來的字句慢慢唸，唸完一遍敲鐘並記一遍。「朗讀」用手機本身的中文語音，第一次可能要等它載入聲音。</p>
+    </div>
+    <div class="card">
+      <b>我的經文收藏</b>
+      <div id="sutra-custom-list"><p class="small muted">還沒有自存的經文。</p></div>
+      <details><summary>＋ 新增一部經（自己貼上全文）</summary>
+        <label class="lbl">名稱</label><input type="text" id="cs-title" placeholder="例：佛說阿彌陀經">
+        <label class="lbl">全文</label><textarea id="cs-text" rows="5" placeholder="把經文全文貼在這裡"></textarea>
+        <button class="btn btn-primary" id="cs-add" style="margin-top:8px;width:100%">存起來</button>
+      </details>
+    </div>
+  </div>
+  <div id="panel-mantra" style="display:none">
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><b>念咒</b><span class="small muted" id="mantra-today">今日 0 遍</span></div>
+      <label class="lbl">選擇咒語</label>
+      <select id="mantra-select"></select>
+      <p class="small muted center" id="mantra-note" style="margin:6px 0 0"></p>
+      <p class="mantra-text" id="mantra-text"></p>
+      <label class="lbl">目標遍數（一輪）</label>
+      <div class="seg" id="mantra-targets"><button data-n="21">21 遍</button><button data-n="54">54 遍</button><button data-n="108" class="active">108 遍</button></div>
+      <button id="mantra-big">唸一遍</button>
+      <div class="center"><span class="big" id="mantra-progress">0 / 108</span><div class="small muted">點圓鈕，一遍一遍數；滿一輪敲引磬一聲</div></div>
+      <div class="row" style="margin-top:8px"><button class="btn" id="mantra-tts" style="flex:1">🔊 朗讀 3 遍聽聽</button><button class="btn" id="mantra-reset" style="flex:1">這一輪重來</button></div>
+    </div>
+    <div class="card">
+      <b>我的咒語收藏</b>
+      <div id="mantra-custom-list"><p class="small muted">還沒有自存的咒語。</p></div>
+      <details><summary>＋ 新增一個咒（自己貼上）</summary>
+        <label class="lbl">名稱</label><input type="text" id="cm-title" placeholder="例：大悲咒">
+        <label class="lbl">咒文</label><textarea id="cm-text" rows="4" placeholder="把咒文貼在這裡"></textarea>
+        <button class="btn btn-primary" id="cm-add" style="margin-top:8px;width:100%">存起來</button>
+      </details>
+    </div>
   </div>
   <div class="card">
-    <b>🎵 自己的誦經／禪修音樂</b>
-    <p class="small muted">選一個你自己的 MP3 檔，就會循環播放（只在這次使用，下次要重新選）。</p>
-    <input type="file" id="music-file" accept="audio/*">
-    <div class="row" style="margin-top:8px"><button class="btn" id="music-stop">停止音樂</button></div>
+    <b>🎵 誦經音樂庫</b>
+    <p class="small muted" style="margin:4px 0">內建的兩支直接點就能放，不用再選檔案。自己加入的 MP3 會存進 App，下次打開還在，清單裡點一下就換。</p>
+    <div class="track"><span class="nm">🎧 般若心經（合成誦經，1 分 32 秒）</span><button class="btn" id="mb-heart">播放</button></div>
+    <div class="track"><span class="nm">🎧 南無阿彌陀佛（佛號循環，約 5 分鐘）</span><button class="btn" id="mb-ami">播放</button></div>
+    <div id="music-list"></div>
+    <label class="lbl">加入自己的 MP3（可多選，會存進 App）</label>
+    <input type="file" id="music-file" accept="audio/*" multiple>
+    <div class="row" style="margin-top:8px"><span class="small muted" id="music-now" style="flex:1">尚未播放</span><button class="btn" id="music-stop">停止音樂</button></div>
   </div>
 </section>
-
 <!-- 記錄 -->
 <section class="view" id="view-record">
   <div class="card">
@@ -214,13 +279,13 @@ input[type=text],textarea{width:100%;padding:10px 12px;border:1px solid var(--bo
     <div class="row"><button class="btn" id="btn-export" style="flex:1">⬇ 匯出備份</button><button class="btn" id="btn-import" style="flex:1">⬆ 匯入備份（覆蓋）</button></div>
     <input type="file" id="import-file" accept="application/json" style="display:none">
   </div>
-  <div class="card small muted">小山寺 v1 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
+  <div class="card small muted">小山寺 v3 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
 </section>
 </main>
 <nav class="tabs">
   <button data-view="temple" class="active"><span class="ic">🏯</span>佛堂</button>
   <button data-view="practice"><span class="ic">📿</span>修行</button>
-  <button data-view="sutra"><span class="ic">📖</span>心經</button>
+  <button data-view="sutra"><span class="ic">📖</span>經咒</button>
   <button data-view="record"><span class="ic">📊</span>記錄</button>
 </nav>
 <div class="toast" id="toast"></div>
@@ -232,7 +297,7 @@ const NICK_A=["悠閒","淡淡","安靜","緩緩","清清","溫柔","自在","�
 const NICK_B=["雲","月光","山風","流水","松","晨光","落葉","鐘聲","白雲","微風"];
 function rndNick(){return NICK_A[Math.floor(Math.random()*NICK_A.length)]+"的"+NICK_B[Math.floor(Math.random()*NICK_B.length)];}
 function todayKey(d){d=d||new Date();const p=n=>String(n).padStart(2,"0");return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());}
-function blankDay(){return {bow:0,beads:0,laps:0,fish:0,medSec:0,sutra:0};}
+function blankDay(){return {bow:0,beads:0,laps:0,fish:0,qing:0,bowl:0,medSec:0,sutra:0,mantra:0,mRounds:0};}
 let S;
 function load(){try{S=JSON.parse(localStorage.getItem(KEY))||null;}catch(e){S=null;}
   if(!S||typeof S!=="object")S={};
@@ -242,11 +307,17 @@ function load(){try{S=JSON.parse(localStorage.getItem(KEY))||null;}catch(e){S=nu
   if(S.settings.sound===undefined)S.settings.sound=true;
   if(S.settings.ambient===undefined)S.settings.ambient=false;
   if(S.settings.vibe===undefined)S.settings.vibe=true;
+  if(!Array.isArray(S.customSutras))S.customSutras=[];
+  if(!Array.isArray(S.customMantras))S.customMantras=[];
+  if(typeof S.selSutra!=="string")S.selSutra="xinjing";
+  if(typeof S.selMantra!=="string")S.selMantra="ommani";
+  if(typeof S.mantraTarget!=="number")S.mantraTarget=108;
+  if(typeof S.mantraCount!=="number")S.mantraCount=0;
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function day(k){k=k||todayKey();if(!S.days[k])S.days[k]=blankDay();const d=S.days[k];for(const f in blankDay())if(typeof d[f]!=="number")d[f]=0;return d;}
 function addStat(f,n){const d=day();d[f]+=n;save();renderStats();return d;}
-function streak(){let n=0;const d=new Date();const has=k=>{const r=S.days[k];return r&&(r.bow+r.beads+r.fish+r.medSec+r.sutra)>0;};
+function streak(){let n=0;const d=new Date();const has=k=>{const r=S.days[k];return r&&(r.bow+r.beads+r.fish+(r.qing||0)+(r.bowl||0)+r.medSec+r.sutra+(r.mantra||0))>0;};
   if(!has(todayKey(d)))d.setDate(d.getDate()-1);
   while(has(todayKey(d))){n++;d.setDate(d.getDate()-1);}return n;}
 function toast(msg){const t=$("#toast");if(!t)return;t.textContent=msg;t.style.display="block";clearTimeout(t._h);t._h=setTimeout(()=>{t.style.display="none";},2200);}
@@ -263,6 +334,12 @@ function playFish(){const c=ac();if(!c)return;const t=c.currentTime;
 function playBell(vol){const c=ac();if(!c)return;const t=c.currentTime;const v=vol||0.22;
   [[392,1],[587,.55],[784,.32],[1175,.14]].forEach(function(pr){const o=c.createOscillator(),g=c.createGain();o.type="sine";o.frequency.value=pr[0];
   g.gain.setValueAtTime(v*pr[1],t);g.gain.exponentialRampToValueAtTime(0.0008,t+2.8);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+3);});}
+function playQing(){const c=ac();if(!c)return;const t=c.currentTime;
+  [[2217,1],[3325,.5],[4435,.22],[2959,.35]].forEach(function(pr){const o=c.createOscillator(),g=c.createGain();o.type="sine";o.frequency.value=pr[0];
+  g.gain.setValueAtTime(0.20*pr[1],t);g.gain.exponentialRampToValueAtTime(0.0008,t+2.1);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+2.2);});}
+function playBowl(){const c=ac();if(!c)return;const t=c.currentTime;
+  [[196,1],[392.5,.6],[587,.34],[784,.18],[988,.08]].forEach(function(pr){const o=c.createOscillator(),g=c.createGain();o.type="sine";o.frequency.value=pr[0];
+  g.gain.setValueAtTime(0.001,t);g.gain.exponentialRampToValueAtTime(0.30*pr[1],t+0.03);g.gain.exponentialRampToValueAtTime(0.0008,t+5.6);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+5.8);});}
 let ambNodes=null,ambTimer=null;
 function ambientStart(){if(ambNodes)return;let c=null;try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();c=AC;if(c.state==="suspended")c.resume();}catch(e){return;}
   const len=c.sampleRate*2,nb=c.createBuffer(1,len,c.sampleRate),ch=nb.getChannelData(0);let last=0;for(let i=0;i<len;i++){const w=Math.random()*2-1;last=(last+0.02*w)/1.02;ch[i]=last*3;}
@@ -302,8 +379,10 @@ function tapBead(){S.beadPos=beadPos()+1;addStat("beads",1);playFish();vibe(8);
   if(S.beadPos>=108){S.beadPos=0;addStat("laps",1);save();playBell();toast("一圈 108 顆，圓滿 🙏");}
   save();renderBeads();}
 /* ---------- 木魚 ---------- */
-function renderFish(){$("#fish-count").textContent=day().fish;}
+function renderFish(){const d=day();$("#fish-count").textContent=d.fish;const q=$("#qing-count");if(q)q.textContent=d.qing;const b=$("#bowl-count");if(b)b.textContent=d.bowl;}
 function tapFish(){addStat("fish",1);playFish();vibe(10);renderFish();}
+function tapQing(){addStat("qing",1);playQing();vibe(12);renderFish();}
+function tapBowl(){addStat("bowl",1);playBowl();vibe(18);renderFish();}
 /* ---------- 靜坐計時 ---------- */
 let medMin=5,medLeft=300,medTimer=null;
 function fmtClock(sec){const p=n=>String(n).padStart(2,"0");return p(Math.floor(sec/60))+":"+p(sec%60);}
@@ -319,30 +398,129 @@ function medStart(){if(medTimer)return;medLeft=medMin*60;medShow();
   goSpot("hall");$("#player").classList.add("sitting");$("#breath").classList.add("on");playBell(0.15);
   try{if(navigator.wakeLock)navigator.wakeLock.request("screen").catch(()=>{});}catch(e){}
   medTimer=setInterval(function(){medLeft--;medShow();if(medLeft<=0)medFinish(true);},1000);}
-/* ---------- 心經 ---------- */
+/* ---------- 經咒圖書館 ---------- */
 const SUTRA_SEGS=["觀自在菩薩，行深般若波羅蜜多時，照見五蘊皆空，度一切苦厄。","舍利子，色不異空，空不異色；色即是空，空即是色。受想行識，亦復如是。","舍利子，是諸法空相，不生不滅，不垢不淨，不增不減。","是故空中無色，無受想行識，無眼耳鼻舌身意，無色聲香味觸法，無眼界，乃至無意識界。","無無明，亦無無明盡，乃至無老死，亦無老死盡。無苦集滅道，無智亦無得。","以無所得故，菩提薩埵，依般若波羅蜜多故，心無罣礙，無罣礙故，無有恐怖，遠離顛倒夢想，究竟涅槃。","三世諸佛，依般若波羅蜜多故，得阿耨多羅三藐三菩提。","故知般若波羅蜜多，是大神咒，是大明咒，是無上咒，是無等等咒，能除一切苦，真實不虛。","故說般若波羅蜜多咒，即說咒曰：揭諦，揭諦，波羅揭諦，波羅僧揭諦，菩提薩婆訶。"];
-let sutraIdx=-1,sutraTimer=null;
-function renderSutra(){$("#sutra-text").innerHTML=SUTRA_SEGS.map(function(t,i){return '<span class="sg'+(i===sutraIdx?" on":"")+'">'+t+'</span>';}).join("");
+const BUILTIN_SUTRAS=[
+ {id:"xinjing",title:"般若心經（全文）",text:SUTRA_SEGS.join("")},
+ {id:"jingang",title:"金剛經・四句偈（節錄）",text:"一切有為法，如夢幻泡影，如露亦如電，應作如是觀。"},
+ {id:"qifo",title:"七佛通戒偈",text:"諸惡莫作，眾善奉行，自淨其意，是諸佛教。"},
+ {id:"huayan",title:"華嚴經・覺林菩薩偈（節錄）",text:"若人欲了知，三世一切佛，應觀法界性，一切唯心造。"},
+ {id:"puxian",title:"普賢警眾偈",text:"是日已過，命亦隨減，如少水魚，斯有何樂。大眾，當勤精進，如救頭燃，但念無常，慎勿放逸。"}];
+const BUILTIN_MANTRAS=[
+ {id:"ommani",title:"六字大明咒",note:"觀世音菩薩心咒",text:"唵嘛呢叭咪吽"},
+ {id:"amitofo",title:"阿彌陀佛佛號",note:"淨土宗佛號",text:"南無阿彌陀佛"},
+ {id:"wangsheng",title:"往生咒",note:"拔一切業障根本得生淨土陀羅尼",text:"南無阿彌多婆夜，哆他伽多夜，哆地夜他，阿彌利都婆毗，阿彌利哆，悉耽婆毗，阿彌唎哆，毗迦蘭帝，阿彌唎哆，毗迦蘭多，伽彌膩，伽伽那，枳多迦利，娑婆訶。"},
+ {id:"zhunti",title:"準提咒",note:"準提菩薩心咒（咒心在後段）",text:"南無颯哆喃，三藐三菩陀，俱胝布吽，怛姪他，唵，折隸，主隸，準提，娑婆訶。"},
+ {id:"dizang",title:"地藏菩薩滅定業真言",note:"",text:"唵，缽囉末鄰陀寧，娑婆訶。"},
+ {id:"tara",title:"綠度母心咒",note:"",text:"唵，達咧，嘟達咧，嘟咧，娑訶。"},
+ {id:"manjushri",title:"文殊菩薩五字心咒",note:"",text:"唵，阿囉，跛左，曩。"}];
+function allSutras(){return BUILTIN_SUTRAS.concat(S.customSutras);}
+function allMantras(){return BUILTIN_MANTRAS.concat(S.customMantras);}
+function curSutra(){return allSutras().find(function(x){return x.id===S.selSutra;})||BUILTIN_SUTRAS[0];}
+function curMantra(){return allMantras().find(function(x){return x.id===S.selMantra;})||BUILTIN_MANTRAS[0];}
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function splitText(t){const m=String(t).match(/[^。；！？]+[。；！？]?/g);return (m||[t]).map(function(x){return x.trim();}).filter(Boolean);}
+function renderLibSelects(){
+  $("#sutra-select").innerHTML=allSutras().map(function(x){return '<option value="'+x.id+'">'+esc(x.title)+'</option>';}).join("");
+  $("#sutra-select").value=S.selSutra;
+  $("#mantra-select").innerHTML=allMantras().map(function(x){return '<option value="'+x.id+'">'+esc(x.title)+'</option>';}).join("");
+  $("#mantra-select").value=S.selMantra;
+  renderCustomLists();}
+function renderCustomLists(){
+  const mk=function(list,elId,kind){const el=$(elId);if(!el)return;
+    el.innerHTML=list.length?list.map(function(x){return '<div class="track"><span class="nm">'+esc(x.title)+'</span><button class="btn" data-pick-'+kind+'="'+x.id+'">選用</button><button class="del" data-del-'+kind+'="'+x.id+'" aria-label="刪除">✕</button></div>';}).join(""):'<p class="small muted">還沒有自存的。</p>';
+    el.querySelectorAll("[data-pick-"+kind+"]").forEach(function(b){b.addEventListener("click",function(){pickCustom(kind,b.getAttribute("data-pick-"+kind));});});
+    el.querySelectorAll("[data-del-"+kind+"]").forEach(function(b){b.addEventListener("click",function(){delCustom(kind,b.getAttribute("data-del-"+kind));});});};
+  mk(S.customSutras,"#sutra-custom-list","sutra");mk(S.customMantras,"#mantra-custom-list","mantra");}
+function pickCustom(kind,id){if(kind==="sutra"){S.selSutra=id;save();renderLibSelects();sutraResetAll();renderSutra();}else{S.selMantra=id;save();renderLibSelects();renderMantra();}}
+function delCustom(kind,id){if(kind==="sutra"){S.customSutras=S.customSutras.filter(function(x){return x.id!==id;});if(S.selSutra===id)S.selSutra="xinjing";}
+  else{S.customMantras=S.customMantras.filter(function(x){return x.id!==id;});if(S.selMantra===id)S.selMantra="ommani";}
+  save();renderLibSelects();renderSutra();renderMantra();toast("已刪除");}
+function addCustom(kind){const tEl=$(kind==="sutra"?"#cs-title":"#cm-title"),xEl=$(kind==="sutra"?"#cs-text":"#cm-text");
+  const title=tEl.value.trim(),text=xEl.value.trim();
+  if(!title||!text){toast("名稱和全文都要填");return;}
+  const item={id:"c"+Date.now(),title:title,text:text};
+  if(kind==="sutra"){S.customSutras.push(item);S.selSutra=item.id;}else{S.customMantras.push(item);S.selMantra=item.id;}
+  tEl.value="";xEl.value="";save();renderLibSelects();
+  if(kind==="sutra"){sutraResetAll();renderSutra();}else renderMantra();
+  toast("存好了，已自動選用");}
+/* ---------- 誦經播放 ---------- */
+let sutraSegs=[],sutraIdx=-1,sutraTimer=null;
+function renderSutra(){const cur=curSutra();sutraSegs=splitText(cur.text);
+  if(sutraIdx>=sutraSegs.length)sutraIdx=-1;
+  $("#sutra-title-show").textContent=cur.title;
+  $("#sutra-text").innerHTML=sutraSegs.map(function(t,i){return '<span class="sg'+(i===sutraIdx?" on":"")+'">'+esc(t)+'</span>';}).join("");
   $("#sutra-count").textContent="今日已誦 "+day().sutra+" 遍";}
-function sutraStop(txt){if(sutraTimer)clearInterval(sutraTimer);sutraTimer=null;$("#sutra-play").textContent="▶ 開始誦經";if(txt)toast(txt);}
+function sutraStop(txt){if(sutraTimer)clearTimeout(sutraTimer);sutraTimer=null;const b=$("#sutra-play");if(b)b.textContent="▶ 開始誦經";if(txt)toast(txt);}
+function sutraResetAll(){sutraStop();sutraIdx=-1;}
+function sutraStep(){renderSutra();
+  const seg=sutraSegs[sutraIdx]||"";
+  const delay=Math.min(8000,Math.max(2800,seg.length*185));
+  sutraTimer=setTimeout(function(){sutraIdx++;
+    if(sutraIdx>=sutraSegs.length){const title=curSutra().title;sutraIdx=-1;sutraStop();addStat("sutra",1);renderSutra();playBell();toast(title+" 一遍，圓滿 🙏");return;}
+    sutraStep();},delay);}
 function sutraPlay(){if(sutraTimer){sutraStop("先停在這裡");return;}
-  if(sutraIdx<0||sutraIdx>=SUTRA_SEGS.length-1)sutraIdx=0;renderSutra();$("#sutra-play").textContent="⏸ 暫停";
-  sutraTimer=setInterval(function(){sutraIdx++;
-    if(sutraIdx>=SUTRA_SEGS.length){sutraIdx=-1;renderSutra();sutraStop();addStat("sutra",1);renderSutra();playBell();toast("心經一遍，圓滿 🙏");return;}
-    renderSutra();},4500);}
+  if(sutraIdx<0||sutraIdx>=splitText(curSutra().text).length-1)sutraIdx=0;
+  $("#sutra-play").textContent="⏸ 暫停";sutraStep();}
+/* ---------- 手機語音朗讀 ---------- */
+function ttsSpeakOnce(text){if(typeof speechSynthesis==="undefined"||typeof SpeechSynthesisUtterance==="undefined"){toast("這支手機沒有內建語音朗讀");return false;}
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="zh-TW";u.rate=0.82;
+    const vs=speechSynthesis.getVoices();for(let i=0;i<vs.length;i++){if(/zh|cmn/i.test(vs[i].lang)){u.voice=vs[i];break;}}
+    speechSynthesis.speak(u);return true;}catch(e){toast("朗讀啟動失敗");return false;}}
+function ttsStop(){if(typeof speechSynthesis!=="undefined")try{speechSynthesis.cancel();}catch(e){}}
+/* ---------- 念咒計遍 ---------- */
+function renderMantra(){const m=curMantra();
+  $("#mantra-text").textContent=m.text;$("#mantra-note").textContent=m.note||"";
+  if(S.mantraCount>S.mantraTarget)S.mantraCount=0;
+  $("#mantra-progress").textContent=S.mantraCount+" / "+S.mantraTarget;
+  $("#mantra-today").textContent="今日 "+day().mantra+" 遍 · 滿輪 "+day().mRounds+" 次";
+  document.querySelectorAll("#mantra-targets button").forEach(function(b){b.classList.toggle("active",parseInt(b.getAttribute("data-n"),10)===S.mantraTarget);});}
+function tapMantra(){S.mantraCount++;addStat("mantra",1);playFish();vibe(8);
+  if(S.mantraCount>=S.mantraTarget){S.mantraCount=0;addStat("mRounds",1);save();playQing();toast("一輪 "+S.mantraTarget+" 遍，圓滿 🙏");}
+  save();renderMantra();}
+function showPanel(kind){const isS=kind==="sutra";
+  $("#panel-sutra").style.display=isS?"":"none";$("#panel-mantra").style.display=isS?"none":"";
+  $("#seg-sutra").classList.toggle("active",isS);$("#seg-mantra").classList.toggle("active",!isS);}
+
 /* ---------- 記錄／統計 ---------- */
 function renderStats(){const d=day();
   $("#st-bow").textContent=d.bow;$("#st-beads").textContent=d.beads;$("#st-fish").textContent=d.fish;$("#st-med").textContent=Math.round(d.medSec/60);
   const st=streak();$("#streak-line").textContent=st>0?"🔥 已連續修行 "+st+" 天":"今天開始第一天";
   renderFish();}
-function renderHist(){let rows='<table class="sum"><tr><th>日期</th><th>跪拜</th><th>念珠</th><th>木魚</th><th>靜坐</th><th>心經</th></tr>';
+function renderHist(){let rows='<div style="overflow-x:auto"><table class="sum"><tr><th>日期</th><th>跪拜</th><th>念珠</th><th>木魚</th><th>引磬</th><th>頌缽</th><th>靜坐</th><th>誦經</th><th>念咒</th></tr>';
   for(let i=0;i<14;i++){const dt=new Date();dt.setDate(dt.getDate()-i);const k=todayKey(dt);const r=S.days[k]||blankDay();
-    rows+="<tr><td>"+k.slice(5)+(i===0?"（今）":"")+"</td><td>"+r.bow+"</td><td>"+r.beads+"</td><td>"+r.fish+"</td><td>"+Math.round(r.medSec/60)+" 分</td><td>"+r.sutra+"</td></tr>";}
-  $("#hist").innerHTML=rows+"</table>";}
-/* ---------- 音樂 ---------- */
-let musicAudio=null;
-function musicPlayFile(f){if(!f)return;try{if(musicAudio)musicAudio.pause();musicAudio=new Audio(URL.createObjectURL(f));musicAudio.loop=true;musicAudio.volume=0.8;musicAudio.play();toast("音樂播放中 🎵");}catch(e){toast("這個檔案播不了");}}
-function musicStop(){if(musicAudio){musicAudio.pause();musicAudio=null;toast("音樂停了");}}
+    rows+="<tr><td>"+k.slice(5)+(i===0?"（今）":"")+"</td><td>"+r.bow+"</td><td>"+r.beads+"</td><td>"+r.fish+"</td><td>"+(r.qing||0)+"</td><td>"+(r.bowl||0)+"</td><td>"+Math.round(r.medSec/60)+" 分</td><td>"+r.sutra+"</td></tr>";}
+  $("#hist").innerHTML=rows+"</table></div>";}
+/* ---------- 音樂庫 ---------- */
+let musicAudio=null,musicURL=null;
+function musicSetNow(txt){const el=$("#music-now");if(el)el.textContent=txt;}
+function musicPlaySrc(src,name,revoke){musicStop();
+  try{musicAudio=new Audio(src);musicAudio.loop=true;musicAudio.volume=0.85;musicURL=revoke?src:null;
+    musicAudio.play();musicSetNow("播放中："+name);}catch(e){toast("這個檔案播不了");}}
+function musicStop(){if(musicAudio){try{musicAudio.pause();}catch(e){}musicAudio=null;}
+  if(musicURL){try{URL.revokeObjectURL(musicURL);}catch(e){}musicURL=null;}
+  musicSetNow("尚未播放");}
+function idbOpen(cb){if(typeof indexedDB==="undefined")return;
+  try{const rq=indexedDB.open("temple-audio",1);
+    rq.onupgradeneeded=function(){rq.result.createObjectStore("tracks",{keyPath:"id"});};
+    rq.onsuccess=function(){cb(rq.result);};rq.onerror=function(){};}catch(e){}}
+function idbAll(cb){idbOpen(function(db){try{const rq=db.transaction("tracks","readonly").objectStore("tracks").getAll();
+  rq.onsuccess=function(){cb(rq.result||[]);};rq.onerror=function(){cb([]);};}catch(e){cb([]);}});}
+function refreshMusicList(){idbAll(function(list){renderMusicList(list);});}
+function renderMusicList(list){const el=$("#music-list");if(!el)return;
+  el.innerHTML=(list||[]).map(function(t){return '<div class="track"><span class="nm">🎵 '+esc(t.name)+'</span><button class="btn" data-mplay="'+t.id+'">播放</button><button class="del" data-mdel="'+t.id+'" aria-label="刪除">✕</button></div>';}).join("");
+  el.querySelectorAll("[data-mplay]").forEach(function(b){b.addEventListener("click",function(){playOwnTrack(b.getAttribute("data-mplay"));});});
+  el.querySelectorAll("[data-mdel]").forEach(function(b){b.addEventListener("click",function(){delOwnTrack(b.getAttribute("data-mdel"));});});}
+function playOwnTrack(id){idbAll(function(list){const t=(list||[]).find(function(x){return x.id===id;});
+  if(!t){toast("找不到這個檔案");return;}
+  musicPlaySrc(URL.createObjectURL(t.blob),t.name,true);});}
+function delOwnTrack(id){idbOpen(function(db){try{const tx=db.transaction("tracks","readwrite");tx.objectStore("tracks").delete(id);
+  tx.oncomplete=function(){refreshMusicList();toast("已從音樂庫刪除");};}catch(e){}});}
+function addMusicFiles(files){if(!files||!files.length)return;
+  idbOpen(function(db){try{const tx=db.transaction("tracks","readwrite");const st=tx.objectStore("tracks");
+    for(let i=0;i<files.length;i++){st.put({id:"m"+Date.now()+"_"+i,name:files[i].name,blob:files[i]});}
+    tx.oncomplete=function(){refreshMusicList();toast("已存進音樂庫，下次直接點就能放");};}catch(e){toast("存不進去，檔案可能太大");}});}
+
 /* ---------- 視圖切換 ---------- */
 function showView(name){document.querySelectorAll(".view").forEach(function(v){v.classList.remove("active");});
   const el=$("#view-"+name);if(el)el.classList.add("active");
@@ -355,7 +533,7 @@ function init(){load();save();
   $("#who").textContent="你是「"+S.nickname+"」";
   $("#nick-show").textContent=S.nickname;
   $("#set-sound").checked=!!S.settings.sound;$("#set-ambient").checked=!!S.settings.ambient;$("#set-vibe").checked=!!S.settings.vibe;
-  renderStats();renderBeads();renderFish();renderSutra();medShow();
+  renderStats();renderBeads();renderFish();renderLibSelects();renderSutra();renderMantra();refreshMusicList();medShow();
   document.querySelectorAll(".spot").forEach(function(b){b.addEventListener("click",function(){goSpot(b.getAttribute("data-spot"));vibe(8);});});
   document.querySelectorAll("nav.tabs button").forEach(function(b){b.addEventListener("click",function(){showView(b.getAttribute("data-view"));});});
   document.querySelectorAll("#med-presets button").forEach(function(b){b.addEventListener("click",function(){
@@ -370,20 +548,35 @@ function init(){load();save();
   $("#bead-big").onclick=tapBead;
   $("#bead-reset").onclick=function(){S.beadPos=0;save();renderBeads();toast("這一圈重新開始");};
   $("#fish-big").onclick=tapFish;
+  $("#qing-big").onclick=tapQing;
+  $("#bowl-big").onclick=tapBowl;
   $("#med-start").onclick=medStart;
   $("#med-stop").onclick=function(){medFinish(false);};
   $("#sutra-play").onclick=sutraPlay;
-  $("#sutra-reset").onclick=function(){sutraStop();sutraIdx=-1;renderSutra();};
+  $("#sutra-reset").onclick=function(){sutraResetAll();renderSutra();};
+  $("#seg-sutra").onclick=function(){showPanel("sutra");};
+  $("#seg-mantra").onclick=function(){showPanel("mantra");};
+  $("#sutra-select").onchange=function(){S.selSutra=this.value;save();sutraResetAll();ttsStop();renderSutra();};
+  $("#mantra-select").onchange=function(){S.selMantra=this.value;save();renderMantra();};
+  $("#cs-add").onclick=function(){addCustom("sutra");};
+  $("#cm-add").onclick=function(){addCustom("mantra");};
+  $("#sutra-tts").onclick=function(){ttsSpeakOnce(curSutra().text);};
+  $("#mantra-tts").onclick=function(){const t=curMantra().text;ttsSpeakOnce(t+"。"+t+"。"+t);};
+  $("#mantra-big").onclick=tapMantra;
+  $("#mantra-reset").onclick=function(){S.mantraCount=0;save();renderMantra();toast("這一輪重新開始");};
+  document.querySelectorAll("#mantra-targets button").forEach(function(b){b.addEventListener("click",function(){S.mantraTarget=parseInt(b.getAttribute("data-n"),10)||108;if(S.mantraCount>=S.mantraTarget)S.mantraCount=0;save();renderMantra();});});
+  $("#mb-heart").onclick=function(){musicPlaySrc("./audio-heart.mp3","般若心經（合成誦經）",false);};
+  $("#mb-ami").onclick=function(){musicPlaySrc("./audio-amitabha.mp3","南無阿彌陀佛（佛號循環）",false);};
   $("#nick-reroll").onclick=function(){S.nickname=rndNick();save();$("#nick-show").textContent=S.nickname;$("#who").textContent="你是「"+S.nickname+"」";toast("新法號："+S.nickname);};
   $("#set-sound").onchange=function(){S.settings.sound=this.checked;save();if(!this.checked)ambientStop();};
   $("#set-ambient").onchange=function(){S.settings.ambient=this.checked;save();if(this.checked){ambientStart();toast("風聲鳥鳴開了");}else ambientStop();};
   $("#set-vibe").onchange=function(){S.settings.vibe=this.checked;save();};
-  $("#music-file").addEventListener("change",function(){musicPlayFile(this.files&&this.files[0]);});
+  $("#music-file").addEventListener("change",function(){addMusicFiles(this.files);this.value="";});
   $("#music-stop").onclick=musicStop;
   $("#btn-export").onclick=function(){const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="xiaoshansi-backup.json";a.click();toast("備份已匯出");};
   $("#btn-import").onclick=function(){$("#import-file").click();};
   $("#import-file").addEventListener("change",function(){const f=this.files&&this.files[0];if(!f)return;const r=new FileReader();
-    r.onload=function(){try{const j=JSON.parse(r.result);if(!j||typeof j!=="object"||!j.days)throw 0;S=j;load();save();renderStats();renderBeads();renderSutra();renderHist();$("#who").textContent="你是「"+S.nickname+"」";$("#nick-show").textContent=S.nickname;toast("備份匯入完成");}catch(e){toast("這個備份檔讀不了");}};
+    r.onload=function(){try{const j=JSON.parse(r.result);if(!j||typeof j!=="object"||!j.days)throw 0;S=j;load();save();renderStats();renderBeads();renderLibSelects();renderSutra();renderMantra();renderHist();$("#who").textContent="你是「"+S.nickname+"」";$("#nick-show").textContent=S.nickname;toast("備份匯入完成");}catch(e){toast("這個備份檔讀不了");}};
     r.readAsText(f);});
   if(S.settings.ambient)ambientStart();
   if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js").catch(()=>{});}
