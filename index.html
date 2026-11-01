@@ -47,6 +47,14 @@ nav.tabs .ic{font-size:22px;display:block;line-height:1.2}
 @keyframes bow{0%{transform:rotate(0)}35%{transform:rotate(16deg) translateY(7px)}65%{transform:rotate(16deg) translateY(7px)}100%{transform:rotate(0)}}
 .npc{position:absolute;width:46px;height:60px;transform:translate(-50%,-88%);z-index:6;pointer-events:none;animation:bob 3.4s ease-in-out infinite}
 @keyframes bob{0%,100%{margin-top:0}50%{margin-top:2.5px}}
+#altar-img{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);height:104px;border:3px solid #d97706;border-radius:8px;z-index:2;box-shadow:0 4px 14px rgba(0,0,0,.35);cursor:pointer}
+#buddha-modal{position:fixed;inset:0;background:rgba(12,10,8,.94);z-index:950;display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px}
+#buddha-modal.open{display:flex}
+#buddha-view-img{max-width:100%;max-height:72vh;border-radius:10px;border:3px solid #d97706;object-fit:contain}
+#buddha-modal .cap{color:#fde68a;margin:12px 0 4px;font-size:15px}
+#buddha-modal .rowb{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+#buddha-modal .btn{background:#292524;color:#fff;border-color:#57534e}
+#buddha-modal .btn-gold2{background:var(--gold);border-color:var(--gold);color:#fff;font-weight:700}
 .cushion{position:absolute;width:52px;height:15px;border-radius:50%;background:#b45309;opacity:.85;transform:translate(-50%,-50%);z-index:4;box-shadow:inset 0 -4px 0 #92400e}
 #breath{position:absolute;left:50%;top:34%;width:88px;height:88px;border-radius:50%;border:2px solid rgba(17,94,89,.5);background:rgba(255,255,255,.28);transform:translate(-50%,-50%) scale(.62);z-index:3;display:none}
 #breath.on{display:block;animation:breath 8s ease-in-out infinite}
@@ -123,6 +131,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
     </svg>
     <div class="stage" id="stage">
       <div id="breath"></div>
+      <img id="altar-img" alt="佛像">
       <div class="cushion" style="left:50%;top:66%"></div>
       <div class="cushion" style="left:33%;top:68%"></div>
       <div class="cushion" style="left:67%;top:68%"></div>
@@ -144,6 +153,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
       <button class="btn" id="btn-go-fish">敲木魚 →</button>
       <button class="btn" id="btn-go-beads">撥念珠 →</button>
       <button class="btn" id="btn-bell">🔔 敲鐘一聲</button>
+      <button class="btn" id="btn-buddha">🙏 看佛像</button>
       <button class="btn" id="btn-go-sutra">經咒 →</button>
     </div>
     <p class="small muted" style="margin:10px 0 0">點場景裡的「佛前／庭院／鐘下／樹下」可以走過去。靜坐中再點一次「坐下靜坐」就會起身，時間照算。</p>
@@ -290,7 +300,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
     <div class="row"><button class="btn" id="btn-export" style="flex:1">⬇ 匯出備份</button><button class="btn" id="btn-import" style="flex:1">⬆ 匯入備份（覆蓋）</button></div>
     <input type="file" id="import-file" accept="application/json" style="display:none">
   </div>
-  <div class="card small muted">小山寺 v4 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
+  <div class="card small muted">小山寺 v5 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
 </section>
 </main>
 <nav class="tabs">
@@ -299,6 +309,17 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
   <button data-view="sutra"><span class="ic">📖</span>經咒</button>
   <button data-view="record"><span class="ic">📊</span>記錄</button>
 </nav>
+<div id="buddha-modal">
+  <img id="buddha-view-img" alt="佛像">
+  <div class="cap" id="buddha-cap">佛像</div>
+  <div class="small" style="color:#a8a29e" id="buddha-sub"></div>
+  <div class="rowb">
+    <button class="btn" id="buddha-prev">← 上一尊</button>
+    <button class="btn btn-gold2" id="buddha-set">供奉此尊</button>
+    <button class="btn" id="buddha-next">下一尊 →</button>
+  </div>
+  <div class="rowb"><button class="btn" id="buddha-close">✕ 關閉</button></div>
+</div>
 <div class="toast" id="toast"></div>
 <script>
 "use strict";
@@ -324,6 +345,7 @@ function load(){try{S=JSON.parse(localStorage.getItem(KEY))||null;}catch(e){S=nu
   if(typeof S.selMantra!=="string")S.selMantra="ommani";
   if(typeof S.mantraTarget!=="number")S.mantraTarget=108;
   if(typeof S.mantraCount!=="number")S.mantraCount=0;
+  if(typeof S.buddhaIdx!=="number")S.buddhaIdx=0;
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function day(k){k=k||todayKey();if(!S.days[k])S.days[k]=blankDay();const d=S.days[k];for(const f in blankDay())if(typeof d[f]!=="number")d[f]=0;return d;}
@@ -532,6 +554,21 @@ function addMusicFiles(files){if(!files||!files.length)return;
     for(let i=0;i<files.length;i++){st.put({id:"m"+Date.now()+"_"+i,name:files[i].name,blob:files[i]});}
     tx.oncomplete=function(){refreshMusicList();toast("已存進音樂庫，下次直接點就能放");};}catch(e){toast("存不進去，檔案可能太大");}});}
 
+/* ---------- 佛像 ---------- */
+const BUDDHAS=[{src:"./buddha-1.jpg",name:"佛像一 · 結跏趺坐"},{src:"./buddha-2.jpg",name:"佛像二 · 結跏趺坐"},{src:"./buddha-3.jpg",name:"佛像三 · 手持寶塔"},{src:"./buddha-4.jpg",name:"佛像四 · 佛顏特寫"}];
+let viewIdx=0;
+function renderBuddha(){const img=$("#altar-img");if(!img)return;
+  if(S.buddhaIdx<0||!BUDDHAS[S.buddhaIdx]){img.style.display="none";return;}
+  img.style.display="";img.src=BUDDHAS[S.buddhaIdx].src;}
+function renderBuddhaViewer(){const b=BUDDHAS[viewIdx];if(!b)return;
+  $("#buddha-view-img").src=b.src;$("#buddha-cap").textContent=b.name;
+  $("#buddha-sub").textContent="第 "+(viewIdx+1)+" 尊 / 共 "+BUDDHAS.length+" 尊"+(S.buddhaIdx===viewIdx?" · 已供奉在佛堂":"");
+  $("#buddha-set").textContent=S.buddhaIdx===viewIdx?"取消供奉":"供奉此尊";}
+function openBuddha(){viewIdx=(S.buddhaIdx>=0&&BUDDHAS[S.buddhaIdx])?S.buddhaIdx:0;renderBuddhaViewer();$("#buddha-modal").classList.add("open");}
+function closeBuddha(){$("#buddha-modal").classList.remove("open");}
+function buddhaNav(d){viewIdx=(viewIdx+d+BUDDHAS.length)%BUDDHAS.length;renderBuddhaViewer();}
+function buddhaSetToggle(){if(S.buddhaIdx===viewIdx){S.buddhaIdx=-1;toast("已收起，佛堂恢復清淨");}else{S.buddhaIdx=viewIdx;toast("已供奉："+BUDDHAS[viewIdx].name);}
+  save();renderBuddha();renderBuddhaViewer();}
 /* ---------- 視圖切換 ---------- */
 function showView(name){document.querySelectorAll(".view").forEach(function(v){v.classList.remove("active");});
   const el=$("#view-"+name);if(el)el.classList.add("active");
@@ -544,13 +581,20 @@ function init(){load();save();
   $("#who").textContent="你是「"+S.nickname+"」";
   $("#nick-show").textContent=S.nickname;
   $("#set-sound").checked=!!S.settings.sound;$("#set-ambient").checked=!!S.settings.ambient;$("#set-vibe").checked=!!S.settings.vibe;
-  renderStats();renderBeads();renderFish();renderLibSelects();renderSutra();renderMantra();refreshMusicList();medShow();
-  document.querySelectorAll(".spot").forEach(function(b){b.addEventListener("click",function(){goSpot(b.getAttribute("data-spot"));vibe(8);});});
+  renderStats();renderBeads();renderFish();renderBuddha();renderLibSelects();renderSutra();renderMantra();refreshMusicList();medShow();
+  document.querySelectorAll(".spot").forEach(function(b){b.addEventListener("click",function(){const sp=b.getAttribute("data-spot");goSpot(sp);vibe(8);if(sp==="hall")openBuddha();});});
   document.querySelectorAll("nav.tabs button").forEach(function(b){b.addEventListener("click",function(){showView(b.getAttribute("data-view"));});});
   document.querySelectorAll("#med-presets button").forEach(function(b){b.addEventListener("click",function(){
     document.querySelectorAll("#med-presets button").forEach(function(x){x.classList.remove("active");});b.classList.add("active");
     medMin=parseInt(b.getAttribute("data-min"),10)||5;if(!medTimer){medLeft=medMin*60;medShow();}});});
   $("#btn-bow").onclick=doBow;
+  $("#btn-buddha").onclick=openBuddha;
+  $("#altar-img").addEventListener("click",openBuddha);
+  $("#buddha-close").onclick=closeBuddha;
+  $("#buddha-prev").onclick=function(){buddhaNav(-1);};
+  $("#buddha-next").onclick=function(){buddhaNav(1);};
+  $("#buddha-set").onclick=buddhaSetToggle;
+  $("#buddha-modal").addEventListener("click",function(e){if(e.target===this)closeBuddha();});
   $("#btn-sit").onclick=toggleSit;
   $("#btn-bell").onclick=function(){playBell();vibe(20);toast("鐘聲……聽它慢慢消失");};
   $("#btn-go-fish").onclick=function(){showView("practice");};

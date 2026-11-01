@@ -1,5 +1,5 @@
 /* 小山寺 service worker — 快取 App 本體，離線也能開 */
-const CACHE = 'temple-v4-1';
+const CACHE = 'temple-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -10,7 +10,11 @@ const ASSETS = [
   './audio-heart.mp3',
   './audio-amitabha.mp3',
   './audio-ommani.mp3',
-  './audio-wangsheng.mp3'
+  './audio-wangsheng.mp3',
+  './buddha-1.jpg',
+  './buddha-2.jpg',
+  './buddha-3.jpg',
+  './buddha-4.jpg'
 ];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
