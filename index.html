@@ -244,10 +244,21 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
         <button class="btn btn-primary" id="cm-add" style="margin-top:8px;width:100%">存起來</button>
       </details>
     </div>
+    <div class="card">
+      <b>🎵 念咒音樂庫</b>
+      <p class="small muted" style="margin:4px 0">內建咒語循環點了就放，邊聽邊點圓鈕計遍。自己加入的 MP3 跟佛經那邊共用同一個音樂庫，存一次兩邊都看得到。</p>
+      <div class="track"><span class="nm">🎧 六字大明咒（循環，約 5 分鐘）</span><button class="btn" id="mb-ommani">播放</button></div>
+      <div class="track"><span class="nm">🎧 往生咒（循環，約 5 分鐘）</span><button class="btn" id="mb-wangsheng">播放</button></div>
+      <div class="track"><span class="nm">🎧 南無阿彌陀佛（佛號循環，約 5 分鐘）</span><button class="btn" id="mb-ami2">播放</button></div>
+      <div id="music-list-mantra"></div>
+      <label class="lbl">加入自己的 MP3（可多選，會存進 App）</label>
+      <input type="file" id="music-file-mantra" accept="audio/*" multiple>
+      <div class="row" style="margin-top:8px"><span class="small muted" id="music-now-mantra" style="flex:1">尚未播放</span><button class="btn" id="music-stop-mantra">停止音樂</button></div>
+    </div>
   </div>
   <div class="card">
     <b>🎵 誦經音樂庫</b>
-    <p class="small muted" style="margin:4px 0">內建的兩支直接點就能放，不用再選檔案。自己加入的 MP3 會存進 App，下次打開還在，清單裡點一下就換。</p>
+    <p class="small muted" style="margin:4px 0">內建的直接點就能放，不用再選檔案。自己加入的 MP3 會存進 App，下次打開還在，清單裡點一下就換；念咒頁裡也有專屬的咒語音樂庫（跟這裡共用自存清單）。</p>
     <div class="track"><span class="nm">🎧 般若心經（合成誦經，1 分 32 秒）</span><button class="btn" id="mb-heart">播放</button></div>
     <div class="track"><span class="nm">🎧 南無阿彌陀佛（佛號循環，約 5 分鐘）</span><button class="btn" id="mb-ami">播放</button></div>
     <div id="music-list"></div>
@@ -279,7 +290,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
     <div class="row"><button class="btn" id="btn-export" style="flex:1">⬇ 匯出備份</button><button class="btn" id="btn-import" style="flex:1">⬆ 匯入備份（覆蓋）</button></div>
     <input type="file" id="import-file" accept="application/json" style="display:none">
   </div>
-  <div class="card small muted">小山寺 v3 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
+  <div class="card small muted">小山寺 v4 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
 </section>
 </main>
 <nav class="tabs">
@@ -493,7 +504,7 @@ function renderHist(){let rows='<div style="overflow-x:auto"><table class="sum">
   $("#hist").innerHTML=rows+"</table></div>";}
 /* ---------- 音樂庫 ---------- */
 let musicAudio=null,musicURL=null;
-function musicSetNow(txt){const el=$("#music-now");if(el)el.textContent=txt;}
+function musicSetNow(txt){["#music-now","#music-now-mantra"].forEach(function(q){const el=$(q);if(el)el.textContent=txt;});}
 function musicPlaySrc(src,name,revoke){musicStop();
   try{musicAudio=new Audio(src);musicAudio.loop=true;musicAudio.volume=0.85;musicURL=revoke?src:null;
     musicAudio.play();musicSetNow("播放中："+name);}catch(e){toast("這個檔案播不了");}}
@@ -507,10 +518,10 @@ function idbOpen(cb){if(typeof indexedDB==="undefined")return;
 function idbAll(cb){idbOpen(function(db){try{const rq=db.transaction("tracks","readonly").objectStore("tracks").getAll();
   rq.onsuccess=function(){cb(rq.result||[]);};rq.onerror=function(){cb([]);};}catch(e){cb([]);}});}
 function refreshMusicList(){idbAll(function(list){renderMusicList(list);});}
-function renderMusicList(list){const el=$("#music-list");if(!el)return;
+function renderMusicList(list){["#music-list","#music-list-mantra"].forEach(function(q){const el=$(q);if(!el)return;
   el.innerHTML=(list||[]).map(function(t){return '<div class="track"><span class="nm">🎵 '+esc(t.name)+'</span><button class="btn" data-mplay="'+t.id+'">播放</button><button class="del" data-mdel="'+t.id+'" aria-label="刪除">✕</button></div>';}).join("");
   el.querySelectorAll("[data-mplay]").forEach(function(b){b.addEventListener("click",function(){playOwnTrack(b.getAttribute("data-mplay"));});});
-  el.querySelectorAll("[data-mdel]").forEach(function(b){b.addEventListener("click",function(){delOwnTrack(b.getAttribute("data-mdel"));});});}
+  el.querySelectorAll("[data-mdel]").forEach(function(b){b.addEventListener("click",function(){delOwnTrack(b.getAttribute("data-mdel"));});});});}
 function playOwnTrack(id){idbAll(function(list){const t=(list||[]).find(function(x){return x.id===id;});
   if(!t){toast("找不到這個檔案");return;}
   musicPlaySrc(URL.createObjectURL(t.blob),t.name,true);});}
@@ -567,6 +578,11 @@ function init(){load();save();
   document.querySelectorAll("#mantra-targets button").forEach(function(b){b.addEventListener("click",function(){S.mantraTarget=parseInt(b.getAttribute("data-n"),10)||108;if(S.mantraCount>=S.mantraTarget)S.mantraCount=0;save();renderMantra();});});
   $("#mb-heart").onclick=function(){musicPlaySrc("./audio-heart.mp3","般若心經（合成誦經）",false);};
   $("#mb-ami").onclick=function(){musicPlaySrc("./audio-amitabha.mp3","南無阿彌陀佛（佛號循環）",false);};
+  $("#mb-ommani").onclick=function(){musicPlaySrc("./audio-ommani.mp3","六字大明咒（循環）",false);};
+  $("#mb-wangsheng").onclick=function(){musicPlaySrc("./audio-wangsheng.mp3","往生咒（循環）",false);};
+  $("#mb-ami2").onclick=function(){musicPlaySrc("./audio-amitabha.mp3","南無阿彌陀佛（佛號循環）",false);};
+  $("#music-file-mantra").addEventListener("change",function(){addMusicFiles(this.files);this.value="";});
+  $("#music-stop-mantra").onclick=musicStop;
   $("#nick-reroll").onclick=function(){S.nickname=rndNick();save();$("#nick-show").textContent=S.nickname;$("#who").textContent="你是「"+S.nickname+"」";toast("新法號："+S.nickname);};
   $("#set-sound").onchange=function(){S.settings.sound=this.checked;save();if(!this.checked)ambientStop();};
   $("#set-ambient").onchange=function(){S.settings.ambient=this.checked;save();if(this.checked){ambientStart();toast("風聲鳥鳴開了");}else ambientStop();};
