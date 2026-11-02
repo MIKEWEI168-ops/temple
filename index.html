@@ -47,6 +47,8 @@ nav.tabs .ic{font-size:22px;display:block;line-height:1.2}
 @keyframes bow{0%{transform:rotate(0)}35%{transform:rotate(16deg) translateY(7px)}65%{transform:rotate(16deg) translateY(7px)}100%{transform:rotate(0)}}
 .npc{position:absolute;width:46px;height:60px;transform:translate(-50%,-88%);z-index:6;pointer-events:none;animation:bob 3.4s ease-in-out infinite}
 @keyframes bob{0%,100%{margin-top:0}50%{margin-top:2.5px}}
+.note-item{border-top:1px solid var(--line);padding:8px 0}
+.note-body{white-space:pre-wrap;margin-top:2px;color:#44403c}
 #altar-img{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);height:104px;border:3px solid #d97706;border-radius:8px;z-index:2;box-shadow:0 4px 14px rgba(0,0,0,.35);cursor:pointer}
 #buddha-modal{position:fixed;inset:0;background:rgba(12,10,8,.94);z-index:950;display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px}
 #buddha-modal.open{display:flex}
@@ -166,6 +168,14 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
       <div><div class="num" id="st-fish">0</div><div class="lab">木魚（下）</div></div>
       <div><div class="num" id="st-med">0</div><div class="lab">靜坐（分鐘）</div></div>
     </div>
+  </div>
+  <div class="card">
+    <b>📜 如是我聞</b>
+    <p class="small muted" style="margin:4px 0">把聽到、讀到的佛陀開示記下來，日後回來慢慢翻。</p>
+    <div id="note-list"></div>
+    <label class="lbl">標題</label><input type="text" id="note-title" placeholder="例：應無所住，而生其心">
+    <label class="lbl">內容</label><textarea id="note-text" rows="4" placeholder="把開示的內容寫在這裡"></textarea>
+    <div class="row" style="margin-top:8px"><button class="btn btn-primary" id="note-save" style="flex:1">存起來</button><button class="btn" id="note-cancel" style="display:none">取消編輯</button></div>
   </div>
 </section>
 
@@ -301,7 +311,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
     <div class="row"><button class="btn" id="btn-export" style="flex:1">⬇ 匯出備份</button><button class="btn" id="btn-import" style="flex:1">⬆ 匯入備份（覆蓋）</button></div>
     <input type="file" id="import-file" accept="application/json" style="display:none">
   </div>
-  <div class="card small muted">小山寺 v6.3 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
+  <div class="card small muted">小山寺 v7 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
 </section>
 </main>
 <nav class="tabs">
@@ -347,6 +357,7 @@ function load(){try{S=JSON.parse(localStorage.getItem(KEY))||null;}catch(e){S=nu
   if(typeof S.mantraTarget!=="number")S.mantraTarget=108;
   if(typeof S.mantraCount!=="number")S.mantraCount=0;
   if(typeof S.buddhaIdx!=="number")S.buddhaIdx=0;
+  if(!Array.isArray(S.notes))S.notes=[];
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function day(k){k=k||todayKey();if(!S.days[k])S.days[k]=blankDay();const d=S.days[k];for(const f in blankDay())if(typeof d[f]!=="number")d[f]=0;return d;}
@@ -583,6 +594,24 @@ function addMusicFiles(files,lib){if(!files||!files.length)return;lib=(lib==="ma
       }catch(e){failN++;next(i+1);}});}
   next(0);}
 
+/* ---------- 如是我聞・筆記 ---------- */
+let noteEditId=null;
+function noteDate(ts){const d=new Date(ts);return d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate();}
+function renderNotes(){const el=$("#note-list");if(!el)return;
+  if(!S.notes.length){el.innerHTML='<p class="small muted">還沒有筆記。</p>';return;}
+  el.innerHTML=S.notes.map(function(n){return '<div class="note-item"><div class="row" style="justify-content:space-between"><b>'+esc(n.title)+'</b><span class="small muted">'+noteDate(n.ts)+'</span></div><div class="note-body small">'+esc(n.text)+'</div><div class="row" style="margin-top:4px"><button class="btn" data-nedit="'+n.id+'" style="padding:4px 10px">✏️ 編輯</button><button class="del" data-ndel="'+n.id+'" aria-label="刪除">✕</button></div></div>';}).join("");
+  el.querySelectorAll("[data-nedit]").forEach(function(b){b.addEventListener("click",function(){startEditNote(b.getAttribute("data-nedit"));});});
+  el.querySelectorAll("[data-ndel]").forEach(function(b){b.addEventListener("click",function(){delNote(b.getAttribute("data-ndel"));});});}
+function saveNote(){const title=$("#note-title").value.trim(),text=$("#note-text").value.trim();
+  if(!title||!text){toast("標題和內容都要寫");return;}
+  if(noteEditId){const n=S.notes.find(function(x){return x.id===noteEditId;});if(n){n.title=title;n.text=text;n.ts=Date.now();}noteEditId=null;$("#note-save").textContent="存起來";$("#note-cancel").style.display="none";toast("筆記改好了");}
+  else{S.notes.unshift({id:"n"+Date.now()+"_"+Math.random().toString(36).slice(2,7),title:title,text:text,ts:Date.now()});toast("記下了 🙏");}
+  $("#note-title").value="";$("#note-text").value="";save();renderNotes();}
+function startEditNote(id){const n=S.notes.find(function(x){return x.id===id;});if(!n)return;
+  noteEditId=id;$("#note-title").value=n.title;$("#note-text").value=n.text;
+  $("#note-save").textContent="儲存修改";$("#note-cancel").style.display="";toast("編輯中，改好按「儲存修改」");}
+function cancelEditNote(){noteEditId=null;$("#note-title").value="";$("#note-text").value="";$("#note-save").textContent="存起來";$("#note-cancel").style.display="none";}
+function delNote(id){S.notes=S.notes.filter(function(x){return x.id!==id;});if(noteEditId===id)cancelEditNote();save();renderNotes();toast("已刪除這則筆記");}
 /* ---------- 佛像 ---------- */
 const BUDDHAS=[{src:"./buddha-1.jpg",name:"佛像一 · 結跏趺坐"},{src:"./buddha-2.jpg",name:"佛像二 · 結跏趺坐"},{src:"./buddha-3.jpg",name:"佛像三 · 手持寶塔"},{src:"./buddha-4.jpg",name:"佛像四 · 佛顏特寫"}];
 let viewIdx=0;
@@ -603,20 +632,22 @@ function showView(name){document.querySelectorAll(".view").forEach(function(v){v
   const el=$("#view-"+name);if(el)el.classList.add("active");
   document.querySelectorAll("nav.tabs button").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-view")===name);});
   if(name==="record"){renderHist();$("#nick-show").textContent=S.nickname;}
-  if(name==="temple")renderStats();}
+  if(name==="temple"){renderStats();renderNotes();}}
 /* ---------- 初始化 ---------- */
 function init(){load();save();
   renderPlayer();renderNPCs();goSpot("hall");
   $("#who").textContent="你是「"+S.nickname+"」";
   $("#nick-show").textContent=S.nickname;
   $("#set-sound").checked=!!S.settings.sound;$("#set-ambient").checked=!!S.settings.ambient;$("#set-vibe").checked=!!S.settings.vibe;
-  renderStats();renderBeads();renderFish();renderBuddha();renderLibSelects();renderSutra();renderMantra();refreshMusicList();storageInfo();medShow();
+  renderStats();renderBeads();renderFish();renderBuddha();renderNotes();renderLibSelects();renderSutra();renderMantra();refreshMusicList();storageInfo();medShow();
   document.querySelectorAll(".spot").forEach(function(b){b.addEventListener("click",function(){const sp=b.getAttribute("data-spot");goSpot(sp);vibe(8);if(sp==="hall")openBuddha();});});
   document.querySelectorAll("nav.tabs button").forEach(function(b){b.addEventListener("click",function(){showView(b.getAttribute("data-view"));});});
   document.querySelectorAll("#med-presets button").forEach(function(b){b.addEventListener("click",function(){
     document.querySelectorAll("#med-presets button").forEach(function(x){x.classList.remove("active");});b.classList.add("active");
     medMin=parseInt(b.getAttribute("data-min"),10)||5;if(!medTimer){medLeft=medMin*60;medShow();}});});
   $("#btn-bow").onclick=doBow;
+  $("#note-save").onclick=saveNote;
+  $("#note-cancel").onclick=cancelEditNote;
   $("#btn-buddha").onclick=openBuddha;
   $("#altar-img").addEventListener("click",openBuddha);
   $("#buddha-close").onclick=closeBuddha;
