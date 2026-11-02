@@ -231,6 +231,16 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
         <button class="btn btn-primary" id="cs-add" style="margin-top:8px;width:100%">存起來</button>
       </details>
     </div>
+  <div class="card">
+    <b>🎵 誦經音樂庫</b>
+    <p class="small muted" style="margin:4px 0">內建的直接點就能放，不用再選檔案。自己加入的 MP3 會存進 App，下次打開還在，清單裡點一下就換；念咒頁裡也有專屬的咒語音樂庫（跟這裡共用自存清單）。</p>
+    <div class="track"><span class="nm">🎧 般若心經（合成誦經，1 分 32 秒）</span><button class="btn" id="mb-heart">播放</button></div>
+    <div class="track"><span class="nm">🎧 南無阿彌陀佛（佛號循環，約 5 分鐘）</span><button class="btn" id="mb-ami">播放</button></div>
+    <div id="music-list"></div>
+    <label class="lbl">加入自己的 MP3（可多選，會存進 App）</label>
+    <input type="file" id="music-file" accept="audio/*,.opus,.ogg,.mp3,.m4a" multiple>
+    <div class="row" style="margin-top:8px"><span class="small muted" id="music-now" style="flex:1">尚未播放</span><button class="btn" id="music-stop">停止音樂</button></div>
+  </div>
   </div>
   <div id="panel-mantra" style="display:none">
     <div class="card">
@@ -266,16 +276,6 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
       <div class="row" style="margin-top:8px"><span class="small muted" id="music-now-mantra" style="flex:1">尚未播放</span><button class="btn" id="music-stop-mantra">停止音樂</button></div>
     </div>
   </div>
-  <div class="card">
-    <b>🎵 誦經音樂庫</b>
-    <p class="small muted" style="margin:4px 0">內建的直接點就能放，不用再選檔案。自己加入的 MP3 會存進 App，下次打開還在，清單裡點一下就換；念咒頁裡也有專屬的咒語音樂庫（跟這裡共用自存清單）。</p>
-    <div class="track"><span class="nm">🎧 般若心經（合成誦經，1 分 32 秒）</span><button class="btn" id="mb-heart">播放</button></div>
-    <div class="track"><span class="nm">🎧 南無阿彌陀佛（佛號循環，約 5 分鐘）</span><button class="btn" id="mb-ami">播放</button></div>
-    <div id="music-list"></div>
-    <label class="lbl">加入自己的 MP3（可多選，會存進 App）</label>
-    <input type="file" id="music-file" accept="audio/*,.opus,.ogg,.mp3,.m4a" multiple>
-    <div class="row" style="margin-top:8px"><span class="small muted" id="music-now" style="flex:1">尚未播放</span><button class="btn" id="music-stop">停止音樂</button></div>
-  </div>
 </section>
 <!-- 記錄 -->
 <section class="view" id="view-record">
@@ -301,7 +301,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
     <div class="row"><button class="btn" id="btn-export" style="flex:1">⬇ 匯出備份</button><button class="btn" id="btn-import" style="flex:1">⬆ 匯入備份（覆蓋）</button></div>
     <input type="file" id="import-file" accept="application/json" style="display:none">
   </div>
-  <div class="card small muted">小山寺 v6.1 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
+  <div class="card small muted">小山寺 v6.2 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
 </section>
 </main>
 <nav class="tabs">
