@@ -297,10 +297,11 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
   <div class="card">
     <b>備份</b>
     <p class="small muted">所有記錄只存在這支手機裡。換手機前先匯出備份檔。</p>
+    <p class="small" id="storage-info">儲存空間：查詢中…</p>
     <div class="row"><button class="btn" id="btn-export" style="flex:1">⬇ 匯出備份</button><button class="btn" id="btn-import" style="flex:1">⬆ 匯入備份（覆蓋）</button></div>
     <input type="file" id="import-file" accept="application/json" style="display:none">
   </div>
-  <div class="card small muted">小山寺 v6 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
+  <div class="card small muted">小山寺 v6.1 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
 </section>
 </main>
 <nav class="tabs">
@@ -557,10 +558,27 @@ function renameOwnTrack(id){idbAll(function(list){const t=(list||[]).find(functi
   if(!nn||nn===t.name)return;
   idbOpen(function(db){try{const tx=db.transaction("tracks","readwrite");t.name=nn;tx.objectStore("tracks").put(t);
     tx.oncomplete=function(){refreshMusicList();toast("已改名："+nn);};}catch(e){toast("改名失敗");}});});}
+function storageInfo(){const el=$("#storage-info");if(!el)return;
+  if(navigator.storage&&navigator.storage.estimate){navigator.storage.estimate().then(function(q){
+    const used=((q.usage||0)/1048576).toFixed(1),quota=((q.quota||0)/1048576).toFixed(0);
+    el.textContent="儲存空間：App 已用約 "+used+" MB，瀏覽器給的上限約 "+quota+" MB";}).catch(function(){el.textContent="";});}
+  else el.textContent="";}
 function addMusicFiles(files){if(!files||!files.length)return;
-  idbOpen(function(db){try{const tx=db.transaction("tracks","readwrite");const st=tx.objectStore("tracks");
-    for(let i=0;i<files.length;i++){st.put({id:"m"+Date.now()+"_"+i,name:files[i].name.replace(/\.[A-Za-z0-9]{2,5}$/,""),blob:files[i]});}
-    tx.oncomplete=function(){refreshMusicList();toast("已存進音樂庫，下次直接點就能放");};}catch(e){toast("存不進去，檔案可能太大");}});}
+  if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});
+  const arr=Array.prototype.slice.call(files);let okN=0,failN=0;
+  function next(i){if(i>=arr.length){refreshMusicList();storageInfo();
+      if(okN&&!failN)toast("已存進音樂庫 "+okN+" 首，下次直接點就能放");
+      else if(okN&&failN)toast("存好 "+okN+" 首，"+failN+" 首存不進（多半是空間不夠）");
+      else toast("都存不進去 — 多半是手機或 App 儲存空間不夠");return;}
+    const f=arr[i];
+    idbOpen(function(db){if(!db){failN++;next(i+1);return;}
+      try{const tx=db.transaction("tracks","readwrite");
+        tx.objectStore("tracks").put({id:"m"+Date.now()+"_"+i,name:f.name.replace(/\.[A-Za-z0-9]{2,5}$/,""),blob:f});
+        tx.oncomplete=function(){okN++;next(i+1);};
+        tx.onerror=function(){failN++;next(i+1);};
+        tx.onabort=function(){failN++;next(i+1);};
+      }catch(e){failN++;next(i+1);}});}
+  next(0);}
 
 /* ---------- 佛像 ---------- */
 const BUDDHAS=[{src:"./buddha-1.jpg",name:"佛像一 · 結跏趺坐"},{src:"./buddha-2.jpg",name:"佛像二 · 結跏趺坐"},{src:"./buddha-3.jpg",name:"佛像三 · 手持寶塔"},{src:"./buddha-4.jpg",name:"佛像四 · 佛顏特寫"}];
@@ -589,7 +607,7 @@ function init(){load();save();
   $("#who").textContent="你是「"+S.nickname+"」";
   $("#nick-show").textContent=S.nickname;
   $("#set-sound").checked=!!S.settings.sound;$("#set-ambient").checked=!!S.settings.ambient;$("#set-vibe").checked=!!S.settings.vibe;
-  renderStats();renderBeads();renderFish();renderBuddha();renderLibSelects();renderSutra();renderMantra();refreshMusicList();medShow();
+  renderStats();renderBeads();renderFish();renderBuddha();renderLibSelects();renderSutra();renderMantra();refreshMusicList();storageInfo();medShow();
   document.querySelectorAll(".spot").forEach(function(b){b.addEventListener("click",function(){const sp=b.getAttribute("data-spot");goSpot(sp);vibe(8);if(sp==="hall")openBuddha();});});
   document.querySelectorAll("nav.tabs button").forEach(function(b){b.addEventListener("click",function(){showView(b.getAttribute("data-view"));});});
   document.querySelectorAll("#med-presets button").forEach(function(b){b.addEventListener("click",function(){
