@@ -156,6 +156,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
       <button class="btn" id="btn-go-beads">撥念珠 →</button>
       <button class="btn" id="btn-bell">🔔 敲鐘一聲</button>
       <button class="btn" id="btn-buddha">🙏 看佛像</button>
+      <button class="btn" id="btn-go-notes">📜 如是我聞 →</button>
       <button class="btn" id="btn-go-sutra">經咒 →</button>
     </div>
     <p class="small muted" style="margin:10px 0 0">點場景裡的「佛前／庭院／鐘下／樹下」可以走過去。靜坐中再點一次「坐下靜坐」就會起身，時間照算。</p>
@@ -169,6 +170,10 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
       <div><div class="num" id="st-med">0</div><div class="lab">靜坐（分鐘）</div></div>
     </div>
   </div>
+</section>
+
+<!-- 如是我聞 -->
+<section class="view" id="view-notes">
   <div class="card">
     <b>📜 如是我聞</b>
     <p class="small muted" style="margin:4px 0">把聽到、讀到的佛陀開示記下來，日後回來慢慢翻。</p>
@@ -311,7 +316,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
     <div class="row"><button class="btn" id="btn-export" style="flex:1">⬇ 匯出備份</button><button class="btn" id="btn-import" style="flex:1">⬆ 匯入備份（覆蓋）</button></div>
     <input type="file" id="import-file" accept="application/json" style="display:none">
   </div>
-  <div class="card small muted">小山寺 v7 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
+  <div class="card small muted">小山寺 v8 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
 </section>
 </main>
 <nav class="tabs">
@@ -630,9 +635,10 @@ function buddhaSetToggle(){if(S.buddhaIdx===viewIdx){S.buddhaIdx=-1;toast("已�
 /* ---------- 視圖切換 ---------- */
 function showView(name){document.querySelectorAll(".view").forEach(function(v){v.classList.remove("active");});
   const el=$("#view-"+name);if(el)el.classList.add("active");
-  document.querySelectorAll("nav.tabs button").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-view")===name);});
+  document.querySelectorAll("nav.tabs button").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-view")===name||(name==="notes"&&b.getAttribute("data-view")==="temple"));});
   if(name==="record"){renderHist();$("#nick-show").textContent=S.nickname;}
-  if(name==="temple"){renderStats();renderNotes();}}
+  if(name==="temple"){renderStats();}
+  if(name==="notes"){renderNotes();}}
 /* ---------- 初始化 ---------- */
 function init(){load();save();
   renderPlayer();renderNPCs();goSpot("hall");
@@ -660,6 +666,7 @@ function init(){load();save();
   $("#btn-go-fish").onclick=function(){showView("practice");};
   $("#btn-go-beads").onclick=function(){showView("practice");};
   $("#btn-go-sutra").onclick=function(){showView("sutra");};
+  $("#btn-go-notes").onclick=function(){showView("notes");};
   $("#bead-big").onclick=tapBead;
   $("#bead-reset").onclick=function(){S.beadPos=0;save();renderBeads();toast("這一圈重新開始");};
   $("#fish-big").onclick=tapFish;
