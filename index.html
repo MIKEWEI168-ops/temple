@@ -412,7 +412,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
     <div class="row"><button class="btn" id="btn-export" style="flex:1">⬇ 匯出備份</button><button class="btn" id="btn-import" style="flex:1">⬆ 匯入備份（覆蓋）</button></div>
     <input type="file" id="import-file" accept="application/json" style="display:none">
   </div>
-  <div class="card small muted">小山寺 v9 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
+  <div class="card small muted">小山寺 v10 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
 </section>
 </main>
 <nav class="tabs">
@@ -613,11 +613,35 @@ function sutraPlay(){if(sutraTimer){sutraStop("先停在這裡");return;}
   if(sutraIdx<0||sutraIdx>=splitText(curSutra().text).length-1)sutraIdx=0;
   $("#sutra-play").textContent="⏸ 暫停";sutraStep();}
 /* ---------- 手機語音朗讀 ---------- */
+let ttsQueue=[],ttsSpeaking=false,ttsTimer=null;
+function ttsPickVoice(u){u.lang="zh-TW";u.rate=0.82;
+  const vs=speechSynthesis.getVoices();for(let i=0;i<vs.length;i++){if(/zh|cmn/i.test(vs[i].lang)){u.voice=vs[i];break;}}}
+function ttsChunk(text){const out=[];
+  splitText(text).forEach(function(seg){let s=seg;
+    while(s.length>120){let cut=s.lastIndexOf("，",120);if(cut<40)cut=s.lastIndexOf("、",120);if(cut<40)cut=120;
+      out.push(s.slice(0,cut+1));s=s.slice(cut+1);}
+    if(s)out.push(s);});
+  return out;}
+function ttsMark(){const b=$("#sutra-tts"),m=$("#mantra-tts");
+  if(b)b.textContent=ttsSpeaking?"⏹ 停止朗讀":"🔊 朗讀";
+  if(m)m.textContent=ttsSpeaking?"⏹ 停止朗讀":"🔊 朗讀 3 遍聽聽";}
 function ttsSpeakOnce(text){if(typeof speechSynthesis==="undefined"||typeof SpeechSynthesisUtterance==="undefined"){toast("這支手機沒有內建語音朗讀");return false;}
-  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="zh-TW";u.rate=0.82;
-    const vs=speechSynthesis.getVoices();for(let i=0;i<vs.length;i++){if(/zh|cmn/i.test(vs[i].lang)){u.voice=vs[i];break;}}
-    speechSynthesis.speak(u);return true;}catch(e){toast("朗讀啟動失敗");return false;}}
-function ttsStop(){if(typeof speechSynthesis!=="undefined")try{speechSynthesis.cancel();}catch(e){}}
+  if(ttsSpeaking){ttsStop();return true;}
+  ttsQueue=ttsChunk(text);if(!ttsQueue.length){toast("這部經沒有文字");return false;}
+  ttsSpeaking=true;ttsMark();
+  try{speechSynthesis.cancel();}catch(e){}
+  ttsTimer=setInterval(function(){try{if(ttsSpeaking&&!speechSynthesis.speaking)speechSynthesis.resume();}catch(e){}},8000);
+  setTimeout(ttsNext,120);return true;}
+function ttsNext(){if(!ttsSpeaking)return;
+  if(!ttsQueue.length){ttsSpeaking=false;if(ttsTimer){clearInterval(ttsTimer);ttsTimer=null;}ttsMark();return;}
+  const u=new SpeechSynthesisUtterance(ttsQueue.shift());ttsPickVoice(u);
+  u.onend=function(){ttsNext();};
+  u.onerror=function(){ttsNext();};
+  try{speechSynthesis.speak(u);}catch(e){ttsNext();}}
+function ttsStop(){ttsSpeaking=false;ttsQueue=[];
+  if(ttsTimer){clearInterval(ttsTimer);ttsTimer=null;}
+  if(typeof speechSynthesis!=="undefined")try{speechSynthesis.cancel();}catch(e){}
+  ttsMark();}
 /* ---------- 念咒計遍 ---------- */
 function renderMantra(){const m=curMantra();
   $("#mantra-text").textContent=m.text;$("#mantra-note").textContent=m.note||"";
