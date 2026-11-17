@@ -36,8 +36,8 @@ nav.tabs .ic{font-size:22px;display:block;line-height:1.2}
 .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:#292524;color:#fff;padding:10px 18px;border-radius:99px;font-size:14px;z-index:900;display:none;white-space:nowrap}
 /* ---- 佛堂場景 ---- */
 .scene{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--border);background:linear-gradient(#bfe3dd,#e8f2e4 55%,#e9dfc8)}
-.scene svg.bg{position:absolute;inset:0;width:100%;height:100%;display:none}
-.scene svg.bg.on{display:block}
+.scene .bg{position:absolute;inset:0;width:100%;height:100%;display:none;object-fit:cover}
+.scene .bg.on{display:block}
 .scene .stage{position:relative;height:380px}
 .spot-bar{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:8px;z-index:9}
 .spot{background:rgba(255,255,255,.82);border:1px solid #d6c9a3;color:#57534e;font-size:12.5px;border-radius:99px;padding:5px 14px;cursor:pointer;font-family:inherit}
@@ -46,6 +46,8 @@ nav.tabs .ic{font-size:22px;display:block;line-height:1.2}
 .scene[data-spot="hall"] .hall-only{display:block}
 .yard-only{display:none}
 .scene[data-spot="yard"] .yard-only{display:block}
+.stream-only{display:none}
+.scene[data-spot="stream"] .stream-only{display:block}
 #player{position:absolute;width:64px;height:84px;transform:translate(-50%,-88%);transition:left 1.1s ease,top 1.1s ease;z-index:8;pointer-events:none}
 #player .monk{width:100%;height:100%;transform-origin:50% 90%}
 #player.bowing .monk{animation:bow 1.15s ease}
@@ -222,6 +224,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
       <rect x="188" y="234" width="66" height="15" rx="7.5" fill="#8a5a2b" transform="rotate(9 221 241)"/>
       <rect x="120" y="298" width="52" height="9" rx="4" fill="#a8a29e" opacity=".8"/>
     </svg>
+    <img class="bg" id="bg-stream" src="./scene-stream.jpg" alt="溪畔">
     <div class="stage" id="stage">
       <div id="breath"></div>
       <img id="altar-img" alt="佛像">
@@ -233,6 +236,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
       <div class="cushion hall-only" style="left:50%;top:82%"></div>
       <div class="cushion hall-only" style="left:33%;top:84%"></div>
       <div class="cushion hall-only" style="left:67%;top:84%"></div>
+      <div class="cushion stream-only" style="left:58%;top:87%"></div>
       <div id="npcs" class="yard-only"></div>
       <div id="player"></div>
       <div class="spot-bar">
@@ -240,6 +244,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
         <button class="spot" data-spot="yard">庭院</button>
         <button class="spot" data-spot="bell">鐘下</button>
         <button class="spot" data-spot="tree">樹下</button>
+        <button class="spot" data-spot="stream">溪畔</button>
       </div>
     </div>
   </div>
@@ -255,7 +260,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
       <button class="btn" id="btn-go-notes">📜 如是我聞 →</button>
       <button class="btn" id="btn-go-sutra">經咒 →</button>
     </div>
-    <p class="small muted" style="margin:10px 0 0">點場景下方的地點鈕，換個地方待著：佛前是大雄寶殿裡面，樹下是菩提樹下，鐘下在大鐘旁邊，庭院是整個禪寺院子。靜坐中再點一次「坐下靜坐」就會起身，時間照算。</p>
+    <p class="small muted" style="margin:10px 0 0">點場景下方的地點鈕，換個地方待著：佛前是大雄寶殿裡面，樹下是菩提樹下，鐘下在大鐘旁邊，庭院是整個禪寺院子，溪畔是山裡的小溪邊，旁邊開滿紫色魯冰花。靜坐中再點一次「坐下靜坐」就會起身，時間照算。</p>
   </div>
   <div class="card">
     <div class="row" style="justify-content:space-between"><b>今日修行</b><span class="small muted" id="streak-line"></span></div>
@@ -412,7 +417,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--teal2);font-weight:70
     <div class="row"><button class="btn" id="btn-export" style="flex:1">⬇ 匯出備份</button><button class="btn" id="btn-import" style="flex:1">⬆ 匯入備份（覆蓋）</button></div>
     <input type="file" id="import-file" accept="application/json" style="display:none">
   </div>
-  <div class="card small muted">小山寺 v10 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
+  <div class="card small muted">小山寺 v11 · 單機版：沒有聊天、沒有帳號、不用連線。靈感來自韓國網頁 App「山寺」（sansatemple，開發者 metamong.dev）。</div>
 </section>
 </main>
 <nav class="tabs">
@@ -500,12 +505,12 @@ function ambientStart(){if(ambNodes)return;let c=null;try{if(!AC)AC=new (window.
 function ambientStop(){if(ambTimer)clearTimeout(ambTimer);ambTimer=null;if(ambNodes){try{ambNodes.src.stop();}catch(e){}ambNodes=null;}}
 /* ---------- 小和尚 ---------- */
 function monkSVG(robe){return '<svg viewBox="0 0 64 84" width="100%" height="100%"><circle cx="32" cy="17" r="12" fill="#f2c89b"/><path d="M20 12 a12 12 0 0 1 24 0 l0 3 -24 0 Z" fill="#8d6e63"/><circle cx="27.5" cy="17" r="1.6" fill="#292524"/><circle cx="36.5" cy="17" r="1.6" fill="#292524"/><path d="M29 23.5 q3 2.2 6 0" stroke="#292524" fill="none" stroke-width="1.4" stroke-linecap="round"/><path d="M14 76 q0-34 18-38 q18 4 18 38 q-9 3 -18 3 q-9 0 -18 -3Z" fill="'+robe+'"/><path d="M32 38 L24 76 M32 38 L40 76" stroke="rgba(0,0,0,.18)" stroke-width="2" fill="none"/><ellipse cx="32" cy="52" rx="4.6" ry="3.4" fill="#f2c89b"/><circle cx="32" cy="34" r="2" fill="#f59e0b"/></svg>';}
-const SPOTS={hall:{x:50,y:82,label:"佛前"},yard:{x:50,y:82,label:"庭院"},bell:{x:29,y:85,label:"鐘下"},tree:{x:50,y:87,label:"樹下"}};
-const BGS={hall:"bg-hall",yard:"bg-yard",bell:"bg-bell",tree:"bg-tree"};
+const SPOTS={hall:{x:50,y:82,label:"佛前"},yard:{x:50,y:82,label:"庭院"},bell:{x:29,y:85,label:"鐘下"},tree:{x:50,y:87,label:"樹下"},stream:{x:58,y:86,label:"溪畔"}};
+const BGS={hall:"bg-hall",yard:"bg-yard",bell:"bg-bell",tree:"bg-tree",stream:"bg-stream"};
 let curSpot="hall",sitting=false,sitStart=0;
 function goSpot(name){if(!SPOTS[name])return;curSpot=name;const p=$("#player");if(p){p.style.left=SPOTS[name].x+"%";p.style.top=SPOTS[name].y+"%";}
   const sc=$("#scene");if(sc&&sc.dataset)sc.dataset.spot=name;
-  document.querySelectorAll(".scene svg.bg").forEach(function(s){s.classList.toggle("on",s.id===BGS[name]);});
+  document.querySelectorAll(".scene .bg").forEach(function(s){s.classList.toggle("on",s.id===BGS[name]);});
   document.querySelectorAll(".spot").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-spot")===name);});}
 function renderPlayer(){$("#player").innerHTML='<div class="monk">'+monkSVG("#78716c")+'</div>';}
 function renderNPCs(){const spots=[{x:33,y:68,r:"#b45309"},{x:67,y:68,r:"#0f766e"},{x:24,y:80,r:"#9a3412"},{x:76,y:82,r:"#57534e"}];

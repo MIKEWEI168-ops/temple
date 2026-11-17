@@ -1,5 +1,5 @@
 /* 小山寺 service worker — 快取 App 本體，離線也能開 */
-const CACHE = 'temple-v10';
+const CACHE = 'temple-v11';
 const ASSETS = [
   './',
   './index.html',
@@ -14,7 +14,8 @@ const ASSETS = [
   './buddha-1.jpg',
   './buddha-2.jpg',
   './buddha-3.jpg',
-  './buddha-4.jpg'
+  './buddha-4.jpg',
+  './scene-stream.jpg'
 ];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
