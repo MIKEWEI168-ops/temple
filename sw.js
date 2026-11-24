@@ -1,5 +1,5 @@
 /* 小山寺 service worker — 快取 App 本體，離線也能開 */
-const CACHE = 'temple-v11';
+const CACHE = 'temple-v13';
 const ASSETS = [
   './',
   './index.html',
